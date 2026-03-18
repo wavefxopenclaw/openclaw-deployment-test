@@ -1,20 +1,20 @@
 # OpenClaw Mission Control
 
-A polished front-end prototype for observing and managing OpenClaw agents in real time.
+A polished mission-control style front end for observing and managing OpenClaw agents in real time.
 
-## What this is
+## What changed
 
-This app is designed as a mission-control style AI operations console with:
+This is no longer just a mock dashboard.
 
-- fleet-level agent visibility
-- live activity feed
-- alerts and incidents panel
-- task timeline / execution trace
-- cost and usage observability
-- human override controls
-- agent drill-down with logs, tool calls, files, outputs, and errors
+A local API layer now exposes real OpenClaw data for:
 
-Right now it runs on mock data, but the code is organized so real OpenClaw telemetry can be wired in later.
+- agent/session state
+- transcript-derived recent logs
+- session-derived tasks
+- model/provider usage
+- gateway + security status
+
+The UI consumes that API instead of importing hardcoded dashboard data.
 
 ## Stack
 
@@ -22,65 +22,92 @@ Right now it runs on mock data, but the code is organized so real OpenClaw telem
 - Vite
 - Tailwind CSS
 - Recharts
-- lucide-react
-
-## Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-Then open the local URL shown by Vite.
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
+- Express
+- OpenClaw CLI + local session transcript files
 
 ## Architecture
 
-- `src/App.jsx` — main mission control shell and dashboard layout
-- `src/data.js` — mock telemetry and sample agent/task data
+### Front end
+
+- `src/App.jsx` — mission control shell and live dashboard
 - `src/styles.css` — global styles and Tailwind entrypoint
-- `tailwind.config.js` — theme tokens for mission-control styling
 
-## Where to connect real data later
+### API layer
 
-The mock data in `src/data.js` can be replaced with adapters for:
+- `server/index.js` — Express API server
+- `server/openclaw.js` — OpenClaw adapter that reads local CLI JSON + transcript files
 
-- OpenClaw agent/session state
-- task queue and execution traces
-- tool-call logs
-- file mutation events
-- model/provider usage and spend metrics
-- GitHub activity and workflow events
-- Vercel deploy events
-- alerting / policy violations / unsafe action signals
+## Data sources used
 
-A clean next step would be to split the app into these data layers:
+The API currently pulls from real local OpenClaw surfaces:
 
-- `adapters/openclaw.js` for agent/task/session data
-- `adapters/github.js` for repo + workflow telemetry
-- `adapters/vercel.js` for deploy/build events
-- `adapters/usage.js` for cost/token aggregation
+- `openclaw sessions --all-agents --json`
+- `openclaw status --usage --json`
+- `~/.openclaw/agents/*/sessions/*.jsonl`
 
-## Suggested real-time wiring approach
+That gives the dashboard access to:
 
-For a production version, expose a backend or event gateway that streams updates over:
+- live sessions
+- token usage totals
+- model names / providers
+- gateway reachability
+- security findings
+- recent transcript activity
+- transcript-derived tool calls and outputs
 
-- WebSocket or Server-Sent Events for live agent activity
-- REST endpoints for historical queries and drill-down panels
-- periodic snapshots for cost/reliability metrics
+## API endpoints
 
-## Product intent
+- `GET /api/health`
+- `GET /api/dashboard`
+- `GET /api/agents`
+- `GET /api/agents/:id`
+- `GET /api/tasks`
+- `GET /api/model-usage`
 
-This UI is built around five ideas:
+## Run locally
 
-1. centralized control plane
-2. real-time observability
-3. guardrails and alerting
-4. human oversight and intervention
-5. operational trust at fleet scale
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the API:
+
+```bash
+npm run dev:api
+```
+
+In another terminal, start the UI:
+
+```bash
+npm run dev
+```
+
+The Vite dev server proxies `/api/*` to `http://localhost:8787`.
+
+## Build front end
+
+```bash
+npm run build
+```
+
+## Notes on current behavior
+
+The API uses real OpenClaw data, but some dashboard views are still derived rather than first-class runtime primitives:
+
+- task status is inferred from recent session/transcript activity
+- cost is estimated locally from token totals
+- file changes are not yet fully parsed from tool-call arguments
+- override controls are still UI-only
+
+## Good next steps
+
+To make this a fuller production control plane, wire in:
+
+- direct OpenClaw session/event streaming over WebSocket or SSE
+- explicit task queue telemetry
+- tool-call schemas with structured file diff extraction
+- operator actions mapped to pause/resume/cancel/retry endpoints
+- GitHub and Vercel event adapters
+- durable metrics storage for trend charts over time
