@@ -139,6 +139,28 @@ The backend still runs where OpenClaw runs. Vercel is hosting the UI, not your l
 npm run build
 ```
 
+## Companion startup with the gateway
+
+The local gateway launcher now also triggers a companion bootstrap script before the gateway process starts.
+
+Files:
+
+- `scripts/start-openclaw-companions.ps1`
+- `scripts/start-mission-control-api.ps1`
+- `scripts/start-cloudflare-tunnel.ps1`
+
+Current behavior:
+
+- when the gateway launcher runs, it starts the Mission Control API automatically if port `8787` is not already listening
+- it also attempts to start Cloudflare **only if** a named tunnel config exists at `C:\Users\dev\.cloudflared\config.yml`
+- if you are still using a quick tunnel (`cloudflared tunnel --url http://localhost:8787`), auto-start is intentionally skipped so the Vercel API URL does not silently rotate and break the dashboard
+
+### Important tunnel note
+
+Your current public API URL is using a quick tunnel style flow. That is not stable enough for hands-off restart automation because the URL can change.
+
+To fully automate gateway + API + Cloudflare together, switch to a **named Cloudflare tunnel** with a fixed hostname. Once `config.yml` exists, the gateway bootstrap script will automatically launch it.
+
 ## Notes on current behavior
 
 The API uses real OpenClaw data, but some dashboard views are still derived rather than first-class runtime primitives:
