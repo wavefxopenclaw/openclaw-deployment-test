@@ -10,8 +10,8 @@ function deriveWorkspaceState(agents = [], tasks = []) {
   if (failed > 0) {
     return {
       mood: 'alert',
-      title: 'OpenClaw is handling a messy desk day',
-      subtitle: 'Something needs attention. Papers are everywhere, warning lights are on, and the fox is triaging issues fast.',
+      title: 'OpenClaw HQ is in incident mode',
+      subtitle: 'Warning lights are flashing and the fox is scrambling desk-to-desk to stabilize the mission floor.',
       pose: 'desk',
       energy: 'High alert',
       badge: 'Incident mode',
@@ -22,8 +22,8 @@ function deriveWorkspaceState(agents = [], tasks = []) {
   if (running > 0) {
     return {
       mood: 'working',
-      title: 'OpenClaw is focused at the mission desk',
-      subtitle: 'The control room is alive: screens glowing, tasks flowing, and the fox is actively shipping work.',
+      title: 'OpenClaw HQ is actively shipping',
+      subtitle: 'The operations floor is lit up, monitors are buzzing, and the fox is focused at the command desk.',
       pose: 'desk',
       energy: 'Deep work',
       badge: `${running} active agent${running === 1 ? '' : 's'}`,
@@ -34,8 +34,8 @@ function deriveWorkspaceState(agents = [], tasks = []) {
   if (waiting > 0 || totalTasks > 0) {
     return {
       mood: 'planning',
-      title: 'OpenClaw is planning the next move',
-      subtitle: 'A calm in-between state — reviewing notes, sipping coffee, and waiting for the next mission cue.',
+      title: 'OpenClaw HQ is in planning mode',
+      subtitle: 'Coffee is hot, notes are spread out, and the fox is preparing the next wave of tasks.',
       pose: 'lounge',
       energy: 'Ready',
       badge: `${waiting || totalTasks} queued item${waiting === 1 || totalTasks === 1 ? '' : 's'}`,
@@ -45,8 +45,8 @@ function deriveWorkspaceState(agents = [], tasks = []) {
 
   return {
     mood: 'idle',
-    title: 'OpenClaw is relaxing in the office lounge',
-    subtitle: 'No active work right now. The mission room is quiet and the fox is recharging on the couch.',
+    title: 'OpenClaw HQ is in cozy idle mode',
+    subtitle: 'The office is calm, the couch is occupied, and the fox is recharging until the next mission arrives.',
     pose: 'couch',
     energy: 'Idle',
     badge: 'All clear',
@@ -54,72 +54,139 @@ function deriveWorkspaceState(agents = [], tasks = []) {
   };
 }
 
-function SceneArt({ pose = 'desk', accent = 'cyan' }) {
+function PixelTile({ children, className = '' }) {
+  return <div className={`border border-white/10 bg-white/[0.035] ${className}`}>{children}</div>;
+}
+
+function FoxSprite({ pose = 'desk' }) {
+  return (
+    <div className="relative h-20 w-16">
+      <div className="absolute left-1/2 top-1 h-4 w-4 -translate-x-1/2 rotate-45 bg-orange-500" />
+      <div className="absolute left-[18%] top-2 h-3 w-3 -rotate-12 bg-orange-600" />
+      <div className="absolute right-[18%] top-2 rotate-12 h-3 w-3 bg-orange-600" />
+      <div className="absolute left-1/2 top-3 h-8 w-8 -translate-x-1/2 rounded-sm border border-orange-100/20 bg-orange-300" />
+      <div className="absolute left-1/2 top-8 h-8 w-10 -translate-x-1/2 rounded-sm border border-orange-100/20 bg-orange-400" />
+      <div className="absolute left-[18%] top-10 h-6 w-2 rounded-sm bg-orange-300" />
+      <div className="absolute right-[18%] top-10 h-6 w-2 rounded-sm bg-orange-300" />
+      <div className="absolute left-[34%] top-[58px] h-6 w-2 rounded-sm bg-orange-300" />
+      <div className="absolute right-[34%] top-[58px] h-6 w-2 rounded-sm bg-orange-300" />
+      <div className="absolute left-1/2 top-6 h-3 w-5 -translate-x-1/2 rounded-sm bg-white/90" />
+      {pose !== 'couch' && <div className="absolute -right-2 top-9 h-3 w-3 rounded-sm bg-cyan-300" />}
+      {pose === 'couch' && <div className="absolute -right-2 top-9 h-3 w-3 rounded-sm bg-amber-300" />}
+    </div>
+  );
+}
+
+function WorkspacePixelScene({ pose = 'desk', accent = 'cyan' }) {
   const accentMap = {
-    cyan: 'from-cyan-400/30 to-sky-500/10',
-    violet: 'from-violet-400/30 to-fuchsia-500/10',
-    rose: 'from-rose-400/30 to-orange-500/10',
-    emerald: 'from-emerald-400/30 to-cyan-500/10',
+    cyan: 'shadow-cyan-500/20',
+    violet: 'shadow-violet-500/20',
+    rose: 'shadow-rose-500/20',
+    emerald: 'shadow-emerald-500/20',
   };
 
   return (
-    <div className={`relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br ${accentMap[accent] || accentMap.cyan} p-6`}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_35%)]" />
-      <div className="relative mx-auto h-[320px] max-w-[560px]">
-        <div className="absolute inset-x-10 bottom-0 h-4 rounded-full bg-black/30 blur-xl" />
-
-        <div className="absolute inset-x-6 bottom-4 h-28 rounded-[28px] border border-white/10 bg-slate-950/70" />
-        <div className="absolute left-10 top-8 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-slate-100">
-          <MoonStar size={26} />
-        </div>
-        <div className="absolute right-10 top-10 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-amber-200">
-          <Sparkles size={20} />
+    <div className={`rounded-[32px] border border-white/10 bg-[#7f86bd]/15 p-3 shadow-2xl ${accentMap[accent] || accentMap.cyan}`}>
+      <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#9ea7d8]/25">
+        <div className="flex items-center justify-between border-b border-white/10 bg-white/10 px-3 py-2">
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.22em] text-slate-100/80">OpenClaw HQ</div>
         </div>
 
-        {pose !== 'couch' && (
-          <>
-            <div className="absolute left-1/2 top-28 h-24 w-48 -translate-x-1/2 rounded-[24px] border border-cyan-300/20 bg-slate-900/80" />
-            <div className="absolute left-1/2 top-20 h-12 w-28 -translate-x-1/2 rounded-2xl border border-cyan-300/20 bg-cyan-400/10" />
-            <div className="absolute left-[18%] top-36 h-16 w-10 rounded-xl bg-slate-800" />
-            <div className="absolute left-[18%] top-30 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-amber-200">
-              <LampDesk size={20} />
-            </div>
-          </>
-        )}
+        <div className="grid gap-0 md:hidden">
+          <div className="grid grid-cols-6 bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:28px_28px] p-3">
+            <PixelTile className="col-span-4 row-span-2 m-1 rounded-md p-2">
+              <div className="grid h-full grid-cols-2 gap-2">
+                <div className="rounded-md border border-white/10 bg-[#727ac0]/45 p-2">
+                  <div className="mb-2 h-2 w-12 rounded bg-cyan-200/70" />
+                  <div className="flex justify-center">
+                    <FoxSprite pose={pose === 'couch' ? 'desk' : pose} />
+                  </div>
+                </div>
+                <div className="rounded-md border border-white/10 bg-[#727ac0]/45 p-2">
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className="h-2 w-10 rounded bg-violet-200/70" />
+                    <LampDesk size={14} className="text-amber-200" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-1 pt-2">
+                    <div className="h-7 rounded-sm bg-slate-900/30" />
+                    <div className="h-7 rounded-sm bg-slate-900/30" />
+                    <div className="h-7 rounded-sm bg-slate-900/30" />
+                    <div className="h-7 rounded-sm bg-slate-900/30" />
+                  </div>
+                </div>
+                <div className="col-span-2 rounded-md border border-white/10 bg-[#6a72b7]/50 p-2">
+                  <div className="mb-2 flex items-center justify-between text-slate-100/80">
+                    <MoonStar size={13} />
+                    <Sparkles size={13} />
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="h-5 rounded-sm bg-slate-900/25" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </PixelTile>
 
-        {pose === 'couch' && (
-          <>
-            <div className="absolute left-1/2 top-36 h-24 w-56 -translate-x-1/2 rounded-[28px] border border-white/10 bg-violet-400/10" />
-            <div className="absolute left-[28%] top-44 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-slate-100">
-              <Armchair size={20} />
-            </div>
-            <div className="absolute right-[24%] top-40 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-amber-200">
-              <Coffee size={20} />
-            </div>
-          </>
-        )}
+            <PixelTile className="col-span-2 m-1 rounded-md p-2">
+              <div className="flex h-full flex-col items-center justify-center rounded-md bg-[#c7b793]/35 p-2 text-center">
+                {pose === 'couch' ? <Armchair size={20} className="text-slate-100/80" /> : <BriefcaseBusiness size={20} className="text-slate-100/80" />}
+                <div className="mt-2 text-[10px] uppercase tracking-wide text-slate-100/80">
+                  {pose === 'couch' ? 'Lounge' : 'Ops desk'}
+                </div>
+              </div>
+            </PixelTile>
 
-        <div className="absolute left-1/2 top-24 h-40 w-28 -translate-x-1/2">
-          <div className="absolute left-1/2 top-0 h-16 w-16 -translate-x-1/2 rounded-full border border-orange-200/30 bg-orange-300/90" />
-          <div className="absolute left-1/2 top-12 h-24 w-20 -translate-x-1/2 rounded-[30px] border border-orange-200/20 bg-orange-400/80" />
-          <div className="absolute left-[18%] top-24 h-10 w-6 rounded-full bg-orange-300/90" />
-          <div className="absolute right-[18%] top-24 h-10 w-6 rounded-full bg-orange-300/90" />
-          <div className="absolute left-[28%] top-[134px] h-12 w-5 rounded-full bg-orange-300/90" />
-          <div className="absolute right-[28%] top-[134px] h-12 w-5 rounded-full bg-orange-300/90" />
-          <div className="absolute left-[53%] top-6 h-5 w-7 rounded-full border border-orange-100/40 bg-white/60" />
-          <div className="absolute left-[24%] top-4 h-5 w-4 -rotate-12 rounded-t-full bg-orange-500" />
-          <div className="absolute right-[24%] top-4 h-5 w-4 rotate-12 rounded-t-full bg-orange-500" />
-          <div className="absolute left-1/2 top-[58px] h-10 w-16 -translate-x-1/2 rounded-full bg-white/85" />
-          {pose === 'desk' && (
-            <div className="absolute right-[-18px] top-[82px] flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 text-cyan-200">
-              <BriefcaseBusiness size={18} />
-            </div>
-          )}
-          {pose === 'lounge' && (
-            <div className="absolute right-[-18px] top-[82px] flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-amber-200">
-              <Coffee size={18} />
-            </div>
-          )}
+            <PixelTile className="col-span-6 m-1 rounded-md p-2">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="rounded-md bg-[#7a82c4]/45 p-2 text-center">
+                  <Coffee size={16} className="mx-auto text-amber-200" />
+                  <div className="mt-1 text-[10px] uppercase tracking-wide text-slate-100/80">Cafe</div>
+                </div>
+                <div className="rounded-md bg-[#7a82c4]/45 p-2 text-center">
+                  <Bot size={16} className="mx-auto text-cyan-200" />
+                  <div className="mt-1 text-[10px] uppercase tracking-wide text-slate-100/80">Agent bay</div>
+                </div>
+                <div className="rounded-md bg-[#7a82c4]/45 p-2 text-center">
+                  <Sparkles size={16} className="mx-auto text-violet-200" />
+                  <div className="mt-1 text-[10px] uppercase tracking-wide text-slate-100/80">Decor</div>
+                </div>
+              </div>
+            </PixelTile>
+          </div>
+        </div>
+
+        <div className="hidden md:block bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:32px_32px] p-4">
+          <div className="grid grid-cols-12 gap-2">
+            <PixelTile className="col-span-7 rounded-md p-3">
+              <div className="grid grid-cols-3 gap-2">
+                <div className="rounded-md bg-[#727ac0]/45 p-2">
+                  <div className="mb-2 h-2 w-14 rounded bg-cyan-200/70" />
+                  <div className="flex justify-center"><FoxSprite pose={pose === 'couch' ? 'desk' : pose} /></div>
+                </div>
+                <div className="rounded-md bg-[#727ac0]/45 p-2">
+                  <div className="mb-2 flex items-center justify-between"><div className="h-2 w-10 rounded bg-violet-200/70" /><LampDesk size={14} className="text-amber-200" /></div>
+                  <div className="grid grid-cols-2 gap-1 pt-2">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-8 rounded-sm bg-slate-900/30" />)}</div>
+                </div>
+                <div className="rounded-md bg-[#727ac0]/45 p-2">
+                  <div className="mb-2 h-2 w-10 rounded bg-cyan-200/70" />
+                  <div className="flex justify-center"><FoxSprite pose="desk" /></div>
+                </div>
+              </div>
+            </PixelTile>
+            <PixelTile className="col-span-5 rounded-md p-3">
+              <div className="grid h-full grid-cols-2 gap-2">
+                <div className="rounded-md bg-[#c7b793]/35 p-3 text-center"><Coffee size={18} className="mx-auto text-amber-200" /><div className="mt-2 text-[10px] uppercase tracking-wide text-slate-100/80">Cafe bar</div></div>
+                <div className="rounded-md bg-[#7a82c4]/45 p-3 text-center"><Sparkles size={18} className="mx-auto text-violet-200" /><div className="mt-2 text-[10px] uppercase tracking-wide text-slate-100/80">Decor wall</div></div>
+                <div className="col-span-2 rounded-md bg-[#6a72b7]/50 p-3 text-center">{pose === 'couch' ? <Armchair size={20} className="mx-auto text-slate-100/80" /> : <BriefcaseBusiness size={20} className="mx-auto text-slate-100/80" />}<div className="mt-2 text-[10px] uppercase tracking-wide text-slate-100/80">{pose === 'couch' ? 'Lounge corner' : 'Command desk'}</div></div>
+              </div>
+            </PixelTile>
+          </div>
         </div>
       </div>
     </div>
@@ -136,7 +203,7 @@ export function WorkspaceScene({ agents = [], tasks = [] }) {
     <div className="space-y-5">
       <ShellCard title="Workspace" eyebrow="Gamified office view" action={<span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300">{scene.badge}</span>} className="border-cyan-400/10 bg-slate-900/65">
         <div className="space-y-5">
-          <SceneArt pose={scene.pose} accent={scene.accent} />
+          <WorkspacePixelScene pose={scene.pose} accent={scene.accent} />
           <div>
             <h3 className="text-xl font-semibold text-white">{scene.title}</h3>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-400">{scene.subtitle}</p>
