@@ -224,6 +224,13 @@ export default function App() {
       <div className="pointer-events-none fixed inset-x-0 top-0 h-40 bg-gradient-to-b from-cyan-400/10 to-transparent blur-3xl" />
 
       <div className="relative mx-auto flex min-h-screen max-w-[1820px] gap-5 p-4 lg:p-6">
+        <button
+          onClick={() => setMenuOpen((value) => !value)}
+          className="fixed right-4 top-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/80 text-slate-200 shadow-glow backdrop-blur-xl transition hover:bg-white/[0.08] xl:hidden"
+          aria-label="Open navigation"
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
         <aside className="hidden w-72 shrink-0 rounded-[30px] border border-cyan-400/10 bg-slate-900/70 p-5 shadow-glow backdrop-blur-2xl xl:block">
           <div className="mb-8 flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 via-sky-400 to-violet-500 text-slate-950 shadow-lg shadow-cyan-500/20">
@@ -270,29 +277,20 @@ export default function App() {
           <div className="min-w-0 space-y-5">
             <ShellCard className="overflow-hidden border-cyan-400/10 bg-slate-900/65">
               <div className="flex items-start justify-between gap-4">
-                <div className="flex min-w-0 items-start gap-3">
-                  <button
-                    onClick={() => setMenuOpen((value) => !value)}
-                    className="mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-slate-200 transition hover:bg-white/[0.08] xl:hidden"
-                    aria-label="Open navigation"
-                  >
-                    {menuOpen ? <X size={20} /> : <Menu size={20} />}
-                  </button>
-                  <div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/15 bg-cyan-400/10 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-cyan-300">
-                      <Zap size={12} /> Mission Control Active
-                    </div>
-                    <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white lg:text-4xl">
-                      {activeTab === 'workspace'
-                        ? 'Workspace view for your OpenClaw operator.'
-                        : 'Real-time operator view for AI missions, agents, and runtime health.'}
-                    </h2>
-                    <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400 lg:text-[15px]">
-                      {activeTab === 'workspace'
-                        ? 'A gamified office scene where the fox reacts to live fleet state — lounging when idle, focused at the desk when work is flowing, and scrambling when incidents appear.'
-                        : 'Inspired by a modern mission-control control plane: dark, glassy, high-signal, and built around live orchestration instead of a generic admin dashboard.'}
-                    </p>
+                <div className="min-w-0 pr-12 xl:pr-0">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/15 bg-cyan-400/10 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-cyan-300">
+                    <Zap size={12} /> Mission Control Active
                   </div>
+                  <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white lg:text-4xl">
+                    {activeTab === 'workspace'
+                      ? 'Workspace view for your OpenClaw operator.'
+                      : 'Real-time operator view for AI missions, agents, and runtime health.'}
+                  </h2>
+                  <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400 lg:text-[15px]">
+                    {activeTab === 'workspace'
+                      ? 'A gamified office scene where the fox reacts to live fleet state — lounging when idle, focused at the desk when work is flowing, and scrambling when incidents appear.'
+                      : 'Inspired by a modern mission-control control plane: dark, glassy, high-signal, and built around live orchestration instead of a generic admin dashboard.'}
+                  </p>
                 </div>
                 <div className="hidden grid gap-3 sm:grid-cols-2 md:grid">
                   <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center text-sm">
