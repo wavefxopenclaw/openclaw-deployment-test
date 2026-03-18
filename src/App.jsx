@@ -183,7 +183,7 @@ export default function App() {
           </div>
         </aside>
 
-        <main className="grid min-w-0 flex-1 gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <main className="grid min-w-0 flex-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="min-w-0 space-y-5">
             <ShellCard className="overflow-hidden border-cyan-400/10 bg-slate-900/65">
               <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
@@ -199,7 +199,7 @@ export default function App() {
                   </p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-4 text-right text-sm">
+                  <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center text-sm">
                     <p className="text-slate-500">Last sync</p>
                     <p className="mt-1 font-medium text-white">{dashboard.generatedAt ? new Date(dashboard.generatedAt).toLocaleTimeString() : 'Loading...'}</p>
                   </div>
@@ -267,7 +267,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="min-w-0">
+          <div className="min-w-0 self-start">
             <LiveActivityPanel feed={dashboard.feed} agents={dashboard.agents} />
           </div>
         </main>

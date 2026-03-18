@@ -47,7 +47,7 @@ export function LiveActivityPanel({ feed, agents }) {
                       <p className="text-xs text-slate-500">{agent.status} · {agent.lastHeartbeat}</p>
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400">${agent.estimatedCost?.toFixed?.(2) ?? agent.estimatedCost}</span>
+                  <span className="min-w-[56px] text-right text-xs tabular-nums text-slate-400">${agent.estimatedCost?.toFixed?.(2) ?? agent.estimatedCost}</span>
                 </div>
               </div>
             ))
