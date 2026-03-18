@@ -2,22 +2,22 @@ import { Activity, Bot, Radio } from 'lucide-react';
 import { EmptyState, ShellCard } from './ui';
 
 const toneClasses = {
-  cyan: 'bg-cyan-400',
-  warning: 'bg-amber-400',
-  danger: 'bg-rose-400',
-  success: 'bg-emerald-400',
-  accent: 'bg-violet-400',
+  cyan: 'bg-cyan-400 shadow-[0_0_18px_rgba(34,211,238,0.35)]',
+  warning: 'bg-amber-400 shadow-[0_0_18px_rgba(251,191,36,0.3)]',
+  danger: 'bg-rose-400 shadow-[0_0_18px_rgba(251,113,133,0.35)]',
+  success: 'bg-emerald-400 shadow-[0_0_18px_rgba(74,222,128,0.3)]',
+  accent: 'bg-violet-400 shadow-[0_0_18px_rgba(167,139,250,0.35)]',
   muted: 'bg-slate-500',
 };
 
 export function LiveActivityPanel({ feed, agents }) {
   return (
     <div className="space-y-4">
-      <ShellCard title="Live activity" eyebrow="Realtime feed" action={<Radio size={16} className="text-cyan-300" />}>
+      <ShellCard title="Live activity" eyebrow="Realtime feed" action={<Radio size={16} className="text-cyan-300" />} className="border-cyan-400/10 bg-slate-900/65">
         <div className="max-h-[640px] space-y-3 overflow-y-auto pr-1">
           {feed.length ? (
             feed.map((item, index) => (
-              <div key={`${item.agent}-${item.time}-${index}`} className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+              <div key={`${item.agent}-${item.time}-${index}`} className="rounded-2xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center gap-3 text-xs text-slate-500">
                   <span className={`h-2.5 w-2.5 rounded-full ${toneClasses[item.tone] || toneClasses.muted}`} />
                   <span className="truncate text-white">{item.agent}</span>
@@ -32,7 +32,7 @@ export function LiveActivityPanel({ feed, agents }) {
         </div>
       </ShellCard>
 
-      <ShellCard title="Agent observability" eyebrow="Runtime state" action={<Activity size={16} className="text-violet-300" />}>
+      <ShellCard title="Agent observability" eyebrow="Runtime state" action={<Activity size={16} className="text-violet-300" />} className="border-violet-400/10 bg-slate-900/65">
         <div className="space-y-3">
           {agents.length ? (
             agents.map((agent) => (

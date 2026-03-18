@@ -2,9 +2,9 @@ import { AlertTriangle, ArrowUp, CircleDot, Clock3 } from 'lucide-react';
 import { EmptyState, ShellCard } from './ui';
 
 const priorityTone = {
-  high: 'bg-rose-400',
-  medium: 'bg-amber-400',
-  low: 'bg-cyan-400',
+  high: 'bg-rose-400 shadow-[0_0_20px_rgba(251,113,133,0.35)]',
+  medium: 'bg-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.25)]',
+  low: 'bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.3)]',
 };
 
 const statusTone = {
@@ -16,7 +16,7 @@ const statusTone = {
 function TaskCard({ task }) {
   const PriorityIcon = task.priority === 'high' ? AlertTriangle : task.priority === 'medium' ? Clock3 : ArrowUp;
   return (
-    <div className="group rounded-3xl border border-white/10 bg-white/[0.045] p-4 transition hover:border-cyan-400/20 hover:bg-white/[0.07]">
+    <div className="group rounded-3xl border border-white/10 bg-white/[0.045] p-4 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-400/20 hover:bg-white/[0.075]">
       <div className="flex items-start justify-between gap-3">
         <div className={`h-2.5 w-2.5 rounded-full ${priorityTone[task.priority] || priorityTone.low}`} />
         <span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-[11px] uppercase tracking-wide text-slate-400">
@@ -28,11 +28,11 @@ function TaskCard({ task }) {
         <span className="truncate">{task.agentName}</span>
         <span>{task.timeLabel}</span>
       </div>
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-3 flex items-center justify-between gap-3">
         <span className={`inline-flex items-center gap-1 text-xs ${statusTone[task.column] || 'text-slate-300'}`}>
           <CircleDot size={12} /> {task.statusLabel}
         </span>
-        <span className="text-[11px] uppercase tracking-wide text-slate-500">{task.model}</span>
+        <span className="truncate text-[11px] uppercase tracking-wide text-slate-500">{task.model}</span>
       </div>
     </div>
   );
@@ -40,10 +40,10 @@ function TaskCard({ task }) {
 
 export function KanbanBoard({ columns }) {
   return (
-    <ShellCard title="Mission queue" eyebrow="Kanban control plane" action={<span className="text-sm text-slate-500">Live task grouping</span>} className="h-full">
+    <ShellCard title="Mission queue" eyebrow="Central command board" action={<span className="text-sm text-slate-500">Live task grouping</span>} className="h-full border-cyan-400/10 bg-slate-900/65">
       <div className="grid gap-4 xl:grid-cols-3">
         {columns.map((column) => (
-          <div key={column.key} className="rounded-[24px] border border-white/8 bg-slate-950/35 p-4">
+          <div key={column.key} className="rounded-[28px] border border-white/8 bg-black/20 p-4 backdrop-blur-md">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-white">{column.label}</p>
