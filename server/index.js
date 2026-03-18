@@ -1,9 +1,19 @@
 import express from 'express';
+import cors from 'cors';
 import { getOpenClawSnapshot } from './openclaw.js';
 
 const app = express();
 const port = process.env.PORT || 8787;
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').map((v) => v.trim()).filter(Boolean);
 
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.length === 0) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`Origin not allowed: ${origin}`));
+  },
+}));
 app.use(express.json());
 
 app.get('/api/health', async (_req, res) => {

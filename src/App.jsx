@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { api, API_BASE } from './api';
 import {
   Activity,
   AlertTriangle,
@@ -78,9 +79,7 @@ export default function App() {
   async function loadDashboard() {
     try {
       if (!dashboard.generatedAt) setLoading(true);
-      const response = await fetch('/api/dashboard');
-      if (!response.ok) throw new Error(`API returned ${response.status}`);
-      const json = await response.json();
+      const json = await api.dashboard();
       setDashboard(json);
       setSelectedId((current) => current || json.agents?.[0]?.id || null);
       setError('');
@@ -142,7 +141,10 @@ export default function App() {
                 <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Fleet observability</p>
                 <h2 className="mt-2 text-2xl font-semibold text-white lg:text-3xl">AI operations center for OpenClaw agents</h2>
                 <p className="mt-2 max-w-3xl text-sm text-slate-400 lg:text-base">
-                  Real session state, transcript-derived logs, model usage, and operator-facing controls through a local API layer.
+                  Real session state, transcript-derived logs, model usage, and operator-facing controls through a configurable API layer.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  API source: {API_BASE || 'same-origin /api'}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">

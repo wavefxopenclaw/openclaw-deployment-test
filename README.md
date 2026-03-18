@@ -86,6 +86,53 @@ npm run dev
 
 The Vite dev server proxies `/api/*` to `http://localhost:8787`.
 
+## Use the deployed Vercel app with real data
+
+Yes — but the deployed frontend needs a reachable API endpoint. Vercel cannot directly read your local OpenClaw CLI or transcript files.
+
+### Recommended setup
+
+1. Run the local API on your machine:
+
+```bash
+npm run dev:api
+```
+
+2. Expose that API securely with a tunnel or reverse proxy, for example:
+- Cloudflare Tunnel
+- Tailscale Funnel
+- ngrok
+- your own HTTPS reverse proxy
+
+3. Set the frontend's API base URL in Vercel:
+
+- Environment variable: `VITE_API_BASE_URL`
+- Example value: `https://your-openclaw-api.example.com`
+
+4. Allow the Vercel origin on the API server:
+
+- Environment variable: `ALLOWED_ORIGINS`
+- Example: `https://openclaw-deployment-test.vercel.app`
+
+### Example local API startup with allowed Vercel origin
+
+PowerShell:
+
+```powershell
+$env:ALLOWED_ORIGINS="https://openclaw-deployment-test.vercel.app"
+npm run dev:api
+```
+
+### What this gives you
+
+- Vercel-hosted frontend
+- real OpenClaw data fetched from your machine
+- no hardcoded mock dashboard state
+
+### Important caveat
+
+The backend still runs where OpenClaw runs. Vercel is hosting the UI, not your local OpenClaw runtime.
+
 ## Build front end
 
 ```bash
